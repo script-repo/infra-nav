@@ -231,6 +231,7 @@ test("static UI is a full-screen console without the old banner", () => {
   assert.match(html, /id="aboutToggle"/);
   assert.match(html, /Created by Daemon Behr/);
   assert.match(app, /\/api\/version-build/);
+  assert.doesNotMatch(app, /crypto\.randomUUID/);
   assert.doesNotMatch(html, /id="toggleNav"|id="minimizeNav"|Hide folders|Minimize navigation/);
   assert.match(app, /contextmenu/);
   assert.match(app, /\/console/);
@@ -245,7 +246,7 @@ test("version-build is readable without a session", async () => {
     const port = server.address().port;
     const resp = await fetch(`http://127.0.0.1:${port}/api/version-build`);
     assert.equal(resp.status, 200);
-    assert.deepEqual(await resp.json(), { version: "0.1.0", build: "1" });
+    assert.deepEqual(await resp.json(), { version: "0.1.0", build: "2" });
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
