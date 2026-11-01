@@ -421,7 +421,7 @@ if (isMain) {
   const app = createApp();
   const server = http.createServer(app);
   attachConsoleProxy(server);
-  server.listen(port, () => {
+  server.listen(port, "0.0.0.0", () => {
     console.log(`Infrastructure navigator listening on http://localhost:${port}`);
   });
 }
