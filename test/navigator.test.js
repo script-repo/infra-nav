@@ -246,7 +246,7 @@ test("version-build is readable without a session", async () => {
     const port = server.address().port;
     const resp = await fetch(`http://127.0.0.1:${port}/api/version-build`);
     assert.equal(resp.status, 200);
-    assert.deepEqual(await resp.json(), { version: "0.1.0", build: "2" });
+    assert.deepEqual(await resp.json(), { version: "0.1.0", build: "2026-11-01-007" });
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
