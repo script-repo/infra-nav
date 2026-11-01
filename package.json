@@ -1,9 +1,9 @@
 {
-  "name": "sobeys-infra-nav",
+  "name": "infra-nav",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Art-of-the-possible read-only Sobeys infrastructure navigator.",
+  "description": "Read-only Prism Central infrastructure navigator.",
   "scripts": {
     "start": "node server.js",
     "test": "node --test"

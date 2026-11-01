@@ -1,4 +1,4 @@
-/* Retail grocery portal tokens. Source: cv-portal/assets/theme.css */
+/* Visual tokens for the navigator. */
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 
@@ -24,7 +24,7 @@
   --brand-red: #D44325;
   --brand-pink: #FD9EB3;
   --font-body: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-display: "Retail-Supermarket-Grocery Sans", "Poppins", system-ui, sans-serif;
+  --font-display: "Poppins", system-ui, sans-serif;
   --radius-pill: 9999px;
   --radius-lg: 24px;
   --radius-md: 12px;

@@ -8,17 +8,17 @@ import { createApp } from "../server.js";
 function sampleRaw() {
   return {
     clusters: [
-      { id: "c-atl", name: "Atlantic-Canada", externalAddress: "10.0.0.1" },
-      { id: "c-west", name: "Western-Canada", externalAddress: "" }
+      { id: "c-a", name: "cluster-a", externalAddress: "10.0.0.1" },
+      { id: "c-b", name: "cluster-b", externalAddress: "" }
     ],
     vms: [
       {
         uuid: "v1",
         name: "app-1",
         powerState: "ON",
-        categories: ["OS:Windows", "Site:Atlantic-Canada"],
+        categories: ["OS:Windows", "Site:cluster-a"],
         ipAddresses: ["10.1.1.1"],
-        clusterId: "c-atl"
+        clusterId: "c-a"
       },
       {
         uuid: "v2",
@@ -26,7 +26,7 @@ function sampleRaw() {
         powerState: "OFF",
         categories: ["OS:Linux"],
         ipAddresses: [],
-        clusterId: "c-west"
+        clusterId: "c-b"
       },
       {
         uuid: "v3",
@@ -34,7 +34,7 @@ function sampleRaw() {
         powerState: "",
         categories: [],
         ipAddresses: [],
-        clusterId: "c-atl"
+        clusterId: "c-a"
       }
     ],
     clusterError: null,
@@ -50,48 +50,48 @@ function site(tree, id) {
 
 test("sites lists Prism Central and each cluster with its address", () => {
   const tree = projectInventory({ pcHost: "pc.example", ...sampleRaw() });
-  const atlantic = site(tree, "c-atl");
-  const western = site(tree, "c-west");
+  const clusterA = site(tree, "c-a");
+  const clusterB = site(tree, "c-b");
   assert.equal(tree.root.label, "Sites");
   assert.deepEqual(tree.root.children.map((node) => node.label), ["Prism Central"]);
   assert.deepEqual(tree.root.children[0].children.map((node) => node.label), [
-    "Atlantic-Canada",
-    "Western-Canada"
+    "cluster-a",
+    "cluster-b"
   ]);
   assert.equal(tree.root.children[0].externalAddress, "pc.example");
-  assert.equal(atlantic.externalAddress, "10.0.0.1");
+  assert.equal(clusterA.externalAddress, "10.0.0.1");
   assert.deepEqual(
-    atlantic.children.map((node) => node.label),
+    clusterA.children.map((node) => node.label),
     ["VMs", "Hosts", "Storage containers", "Networks", "Categories"]
   );
-  assert.deepEqual(tree.cards["site:c-atl:vms"].map((card) => card.name), ["app-1", "untagged"]);
-  assert.deepEqual(tree.cards["site:c-west:vms"].map((card) => card.uuid), ["v2"]);
-  const tagged = atlantic.children.at(-1).children.find((node) => node.label === "Site: Atlantic-Canada");
+  assert.deepEqual(tree.cards["site:c-a:vms"].map((card) => card.name), ["app-1", "untagged"]);
+  assert.deepEqual(tree.cards["site:c-b:vms"].map((card) => card.uuid), ["v2"]);
+  const tagged = clusterA.children.at(-1).children.find((node) => node.label === "Site: cluster-a");
   assert.deepEqual(tree.cards[tagged.id].map((card) => card.uuid), ["v1"]);
-  const linux = western.children.at(-1).children.find((node) => node.label === "OS: Linux");
+  const linux = clusterB.children.at(-1).children.find((node) => node.label === "OS: Linux");
   assert.deepEqual(tree.cards[linux.id].map((card) => card.name), ["app-2"]);
-  assert.equal(atlantic.children[0].kind, "vms");
+  assert.equal(clusterA.children[0].kind, "vms");
 });
 
 test("empty categories and hosts stay empty instead of inventing rows", () => {
   const tree = projectInventory({
     pcHost: "pc.example",
     ...sampleRaw(),
-    categories: [{ key: "Site", value: "Western-Canada" }]
+    categories: [{ key: "Site", value: "cluster-b" }]
   });
-  const western = site(tree, "c-west");
-  const category = western.children.at(-1).children[0];
-  assert.equal(category.label, "Site: Western-Canada");
+  const clusterB = site(tree, "c-b");
+  const category = clusterB.children.at(-1).children[0];
+  assert.equal(category.label, "Site: cluster-b");
   assert.equal(category.binding, "bound");
   assert.equal(category.emptyMessage, EMPTY_MESSAGE);
   assert.deepEqual(tree.cards[category.id], []);
-  const hosts = western.children[1];
+  const hosts = clusterB.children[1];
   assert.equal(hosts.binding, "bound");
   assert.equal(hosts.emptyMessage, EMPTY_MESSAGE);
   assert.equal(hosts.children.length, 0);
-  assert.equal(western.children[2].kind, "storage");
-  assert.deepEqual(tree.cards[western.children[2].id], []);
-  const card = tree.cards["site:c-atl:vms"][0];
+  assert.equal(clusterB.children[2].kind, "storage");
+  assert.deepEqual(tree.cards[clusterB.children[2].id], []);
+  const card = tree.cards["site:c-a:vms"][0];
   assert.equal(card.ipAddress, "10.1.1.1");
 });
 
@@ -279,9 +279,9 @@ test("session routes project inventory and reject anonymous reads", async () => 
 test("every folder level opens as its own column", () => {
   const tree = projectInventory({ pcHost: "pc.example", ...sampleRaw() });
   const pc = tree.root.children[0];
-  const atlantic = site(tree, "c-atl");
-  const western = site(tree, "c-west");
-  const [vms, hosts, storage, networks, categories] = atlantic.children;
+  const clusterA = site(tree, "c-a");
+  const clusterB = site(tree, "c-b");
+  const [vms, hosts, storage, networks, categories] = clusterA.children;
   const cards = tree.cards;
 
   assert.equal(buildColumns(tree.root, [], cards)[0].title, "Sites");
@@ -291,31 +291,31 @@ test("every folder level opens as its own column", () => {
   );
   assert.deepEqual(
     buildColumns(tree.root, [pc.id], cards)[1].list.map((item) => item.label),
-    ["Atlantic-Canada", "Western-Canada"]
+    ["cluster-a", "cluster-b"]
   );
   assert.deepEqual(
-    buildColumns(tree.root, [pc.id, atlantic.id], cards)[2].list.map((item) => item.label),
+    buildColumns(tree.root, [pc.id, clusterA.id], cards)[2].list.map((item) => item.label),
     ["VMs", "Hosts", "Storage containers", "Networks", "Categories"]
   );
-  const hostColumn = buildColumns(tree.root, [pc.id, atlantic.id, hosts.id], cards).at(-1);
+  const hostColumn = buildColumns(tree.root, [pc.id, clusterA.id, hosts.id], cards).at(-1);
   assert.equal(hostColumn.mode, "empty");
   assert.equal(hostColumn.emptyMessage, EMPTY_MESSAGE);
-  assert.equal(buildColumns(tree.root, [pc.id, atlantic.id, storage.id], cards).at(-1).emptyMessage, EMPTY_MESSAGE);
-  assert.equal(buildColumns(tree.root, [pc.id, atlantic.id, networks.id], cards).at(-1).emptyMessage, EMPTY_MESSAGE);
+  assert.equal(buildColumns(tree.root, [pc.id, clusterA.id, storage.id], cards).at(-1).emptyMessage, EMPTY_MESSAGE);
+  assert.equal(buildColumns(tree.root, [pc.id, clusterA.id, networks.id], cards).at(-1).emptyMessage, EMPTY_MESSAGE);
 
-  const vmColumn = buildColumns(tree.root, [pc.id, atlantic.id, vms.id], cards).at(-1);
+  const vmColumn = buildColumns(tree.root, [pc.id, clusterA.id, vms.id], cards).at(-1);
   assert.equal(vmColumn.mode, "files");
   assert.deepEqual(vmColumn.list.map((item) => item.name), ["app-1", "untagged"]);
 
   const osValue = categories.children.find((node) => node.label === "OS: Windows");
   assert.deepEqual(
-    buildColumns(tree.root, [pc.id, atlantic.id, categories.id, osValue.id], cards)
+    buildColumns(tree.root, [pc.id, clusterA.id, categories.id, osValue.id], cards)
       .at(-1)
       .list.map((item) => item.uuid),
     ["v1"]
   );
-  const emptyOnWest = western.children[4].children.find((node) => node.label === "OS: Windows");
-  const emptySite = buildColumns(tree.root, [pc.id, western.id, western.children[4].id, emptyOnWest.id], cards).at(-1);
+  const emptyOnB = clusterB.children[4].children.find((node) => node.label === "OS: Windows");
+  const emptySite = buildColumns(tree.root, [pc.id, clusterB.id, clusterB.children[4].id, emptyOnB.id], cards).at(-1);
   assert.equal(emptySite.emptyMessage, EMPTY_MESSAGE);
   assert.equal(emptySite.list.length, 0);
 });
