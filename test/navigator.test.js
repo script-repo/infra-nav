@@ -228,11 +228,27 @@ test("static UI is a full-screen console without the old banner", () => {
   assert.match(html, /id="collapseNav"/);
   assert.match(html, /id="collapseInspector"/);
   assert.match(html, /id="consoleTabs"/);
+  assert.match(html, /id="aboutToggle"/);
+  assert.match(html, /Created by Daemon Behr/);
+  assert.match(app, /\/api\/version-build/);
   assert.doesNotMatch(html, /id="toggleNav"|id="minimizeNav"|Hide folders|Minimize navigation/);
   assert.match(app, /contextmenu/);
   assert.match(app, /\/console/);
   assert.match(theme, /--brand-green:\s*#003D2A/);
   assert.match(theme, /--brand-cream:\s*#E9E3D2/);
+});
+
+test("version-build is readable without a session", async () => {
+  const app = createApp();
+  const server = app.listen(0);
+  try {
+    const port = server.address().port;
+    const resp = await fetch(`http://127.0.0.1:${port}/api/version-build`);
+    assert.equal(resp.status, 200);
+    assert.deepEqual(await resp.json(), { version: "0.1.0", build: "1" });
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
 });
 
 test("session routes project inventory and reject anonymous reads", async () => {

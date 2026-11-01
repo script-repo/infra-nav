@@ -10,6 +10,10 @@ const pathbar = document.querySelector("#pathbar");
 const search = document.querySelector("#search");
 const who = document.querySelector("#who");
 const logout = document.querySelector("#logout");
+const aboutToggle = document.querySelector("#aboutToggle");
+const aboutPanel = document.querySelector("#aboutPanel");
+const aboutVersion = document.querySelector("#aboutVersion");
+const aboutBuild = document.querySelector("#aboutBuild");
 const navPane = document.querySelector("#navPane");
 const inspectorPane = document.querySelector("#inspectorPane");
 const collapseNav = document.querySelector("#collapseNav");
@@ -1095,6 +1099,37 @@ signIn.addEventListener("submit", async (event) => {
     button.disabled = false;
   }
 });
+
+async function loadVersionBuild() {
+  try {
+    const resp = await fetch("/api/version-build");
+    const body = await resp.json().catch(() => ({}));
+    if (!resp.ok || !body.version) {
+      aboutVersion.textContent = "Version unavailable";
+      return;
+    }
+    aboutVersion.textContent = `Version ${body.version}`;
+    if (body.build) {
+      aboutBuild.hidden = false;
+      aboutBuild.textContent = `Build ${body.build}`;
+    }
+  } catch {
+    aboutVersion.textContent = "Version unavailable";
+  }
+}
+
+aboutToggle.addEventListener("click", () => {
+  aboutPanel.hidden = !aboutPanel.hidden;
+  aboutToggle.setAttribute("aria-expanded", String(!aboutPanel.hidden));
+});
+
+document.addEventListener("click", (event) => {
+  if (aboutPanel.hidden || event.target.closest(".about-wrap")) return;
+  aboutPanel.hidden = true;
+  aboutToggle.setAttribute("aria-expanded", "false");
+});
+
+loadVersionBuild();
 
 logout.addEventListener("click", async () => {
   await fetch("/api/session", { method: "DELETE", credentials: "same-origin" });

@@ -90,6 +90,35 @@ h1, h2, h3 { font-family: var(--font-display); color: var(--brand-green); margin
 .top-search input { background: rgba(255, 255, 255, .12); border-color: transparent; color: #fff; border-radius: var(--radius-pill); }
 .top-search input::placeholder { color: #c5dece; }
 .top-user { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: .85rem; }
+.about-wrap { position: relative; }
+.sprocket {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: #e7f3ec;
+  cursor: pointer;
+}
+.sprocket:hover, .sprocket[aria-expanded="true"] { background: rgba(255, 255, 255, .1); color: #fff; }
+.about-panel {
+  position: absolute;
+  top: 44px;
+  right: 0;
+  width: 240px;
+  background: #fff;
+  color: var(--brand-ink);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-modal);
+  padding: 14px 16px;
+  z-index: 15;
+}
+.about-panel h2 { font-size: 1rem; margin-bottom: 8px; }
+.about-panel p { margin: 0 0 4px; font-size: .86rem; }
+.about-panel .about-credit { margin-top: 10px; color: var(--brand-grey-700); }
 .tab {
   border: 0;
   cursor: pointer;

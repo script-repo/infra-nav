@@ -55,6 +55,19 @@
       <div class="top-user">
         <span id="who"></span>
         <button class="tab" id="logout" type="button">Log out</button>
+        <div class="about-wrap">
+          <button class="sprocket" id="aboutToggle" type="button" aria-label="About" aria-expanded="false" aria-controls="aboutPanel">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path fill="currentColor" d="M19.4 13.5a7.7 7.7 0 0 0 .1-1.5 7.7 7.7 0 0 0-.1-1.5l2-1.6-2-3.4-2.5 1a7.4 7.4 0 0 0-2.6-1.5L14 2h-4l-.3 2.9a7.4 7.4 0 0 0-2.6 1.5l-2.5-1-2 3.4 2 1.6a7.7 7.7 0 0 0-.1 1.5 7.7 7.7 0 0 0 .1 1.5l-2 1.6 2 3.4 2.5-1a7.4 7.4 0 0 0 2.6 1.5L10 22h4l.3-2.9a7.4 7.4 0 0 0 2.6-1.5l2.5 1 2-3.4-2-1.6ZM12 15.5A3.5 3.5 0 1 1 15.5 12 3.5 3.5 0 0 1 12 15.5Z"/>
+            </svg>
+          </button>
+          <div class="about-panel" id="aboutPanel" hidden>
+            <h2>About</h2>
+            <p id="aboutVersion">Version</p>
+            <p id="aboutBuild" hidden></p>
+            <p class="about-credit">Created by Daemon Behr</p>
+          </div>
+        </div>
       </div>
     </header>
     <div class="stage">

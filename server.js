@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { readFileSync } from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -41,7 +42,19 @@ import { normalizeContainerUsage } from "./lib/container-detail.js";
 import { normalizeHostDetail } from "./lib/host-detail.js";
 import { normalizeVmAsset, normalizeVmStats } from "./lib/vm-detail.js";
 
-const publicDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "public");
+const appDir = path.dirname(fileURLToPath(import.meta.url));
+const publicDir = path.join(appDir, "public");
+const versionBuildPath = path.join(appDir, "version-build");
+
+export function readVersionBuild(filePath = versionBuildPath) {
+  const text = readFileSync(filePath, "utf8").trim();
+  const splitAt = text.indexOf("+");
+  if (splitAt <= 0) return { version: text, build: "" };
+  return {
+    version: text.slice(0, splitAt).trim(),
+    build: text.slice(splitAt + 1).trim()
+  };
+}
 const SESSION_MS = 8 * 60 * 60 * 1000;
 
 export function normalizePcHost(value) {
@@ -398,6 +411,14 @@ export function createApp(overrides = {}) {
       res.json(await runPower(session, req.params.uuid, action));
     } catch (error) {
       res.status(error.statusCode || 502).json({ error: formatPrismError(error) });
+    }
+  });
+
+  app.get("/api/version-build", (_req, res) => {
+    try {
+      res.json(readVersionBuild());
+    } catch {
+      res.status(404).json({ error: "version-build was not found." });
     }
   });
 
