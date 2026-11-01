@@ -1,0 +1,17 @@
+{
+  "name": "sobeys-infra-nav",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Art-of-the-possible read-only Sobeys infrastructure navigator.",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@novnc/novnc": "^1.7.0",
+    "axios": "^1.16.0",
+    "express": "^5.2.1",
+    "ws": "^8.22.1"
+  }
+}

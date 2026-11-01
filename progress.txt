@@ -1,0 +1,34 @@
+# Sobeys infrastructure navigator - Progress Tracking
+
+## Build
+
+### Completed
+- [x] Sites → Prism Central → clusters → VMs, hosts, storage, networks, categories
+- [x] VM right-click power on, power off, and reboot
+- [x] VM click opens a noVNC console in the middle pane
+- [x] Hide folders collapses the left columns
+- [x] VM stats request sends `$select` and `$statType=AVG`
+- [x] VM categories resolve from the Prism category catalog
+- [x] Host selection loads CPU, memory, NICs, and host stats
+- [x] Storage containers stay on their cluster, including rows with no cluster id
+- [x] `npm test` 21 passed
+
+### In Progress
+- None
+
+### Remaining
+- None for this pass. A powered-off VM can still return an empty stats series after Prism accepts the read.
+
+---
+
+## Summary
+The first column is Sites. Prism Central is the row, and its next column is the clusters. Each cluster then opens VMs, hosts, storage containers, networks, and categories. Clicking a VM opens the console between the folders and the detail pane. Right-click offers power actions. Hide folders collapses navigation. Hosts show hardware and performance. Storage containers are listed on the cluster.
+
+## Files Modified
+- `lib/project.js` - Prism Central contains the clusters
+- `lib/prism.js` - Stats query, storage list fallback, host reads
+- `lib/host-detail.js` - Host hardware and stats normalization
+- `lib/actions.js`, `lib/proxy.js` - Console token and power actions
+- `server.js` - Console, power, and host routes
+- `public/index.html`, `public/app.js`, `public/styles.css` - Console pane, menu, host inspector
+- `test/navigator.test.js`, `test/host-detail.test.js`

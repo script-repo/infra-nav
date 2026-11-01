@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infrastructure Navigator</title>
+  <link rel="stylesheet" href="theme.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <section class="gate" id="gate">
+    <form class="gate-card" id="signIn">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+          <path d="M16 2C9 6 6 11 6 17a10 10 0 0 0 20 0c0-2-1-4-2-6-1 4-4 6-8 6 3-4 4-9 0-15Z" fill="#3EB36C"/>
+        </svg>
+      </div>
+      <h1>Infrastructure Navigator</h1>
+      <p class="gate-lead">Sign in to Prism Central.</p>
+      <label>Prism Central address
+        <input type="text" name="pcHost" autocomplete="off" required placeholder="prism-central.example" />
+      </label>
+      <label>Username
+        <input type="text" name="username" autocomplete="username" required />
+      </label>
+      <label>Password
+        <input type="password" name="password" autocomplete="current-password" required />
+      </label>
+      <p class="hint">Credentials stay on this server. Prism Central is contacted on port 9440.</p>
+      <p class="form-error" id="formError" hidden></p>
+      <button class="btn" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <div class="shell" id="shell" hidden>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="22" height="22" fill="none">
+            <path d="M16 2C9 6 6 11 6 17a10 10 0 0 0 20 0c0-2-1-4-2-6-1 4-4 6-8 6 3-4 4-9 0-15Z" fill="#3EB36C"/>
+          </svg>
+        </span>
+        <div class="brand-text">
+          <strong>Infrastructure Navigator</strong>
+          <span>Infrastructure · Operations</span>
+        </div>
+      </div>
+      <label class="top-search">
+        <input type="search" id="search" placeholder="Search this folder" autocomplete="off" />
+      </label>
+      <div class="fav-wrap">
+        <button class="tab" id="favToggle" type="button">Favorites</button>
+        <div class="fav-panel" id="favPanel" hidden></div>
+      </div>
+      <div class="top-user">
+        <span id="who"></span>
+        <button class="tab" id="logout" type="button">Log out</button>
+      </div>
+    </header>
+    <div class="stage">
+      <div class="nav-pane" id="navPane">
+        <div class="columns" id="columns" role="tree" aria-label="Infrastructure folders"></div>
+        <button class="pane-collapse" id="collapseNav" type="button" aria-expanded="true" aria-label="Hide navigation">
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M10.5 3.5 6 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <section class="console-pane" id="consolePane" aria-label="Console">
+        <div class="console-bar">
+          <div class="console-tabs" id="consoleTabs"></div>
+          <button class="tab" id="consoleCad" type="button">Ctrl+Alt+Del</button>
+        </div>
+        <div class="console-screens" id="consoleScreens"></div>
+        <p class="console-status" id="consoleStatus">Select a virtual machine to open its console.</p>
+      </section>
+      <div class="inspector-pane" id="inspectorPane">
+        <button class="pane-collapse" id="collapseInspector" type="button" aria-expanded="true" aria-label="Hide details">
+          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M10.5 3.5 6 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <aside class="inspector" id="inspector" aria-live="polite"></aside>
+      </div>
+    </div>
+    <div class="menu" id="menu" hidden></div>
+    <dialog class="fav-dialog" id="favDialog">
+      <form id="favForm">
+        <h2>Add to favorites</h2>
+        <label>Name
+          <input name="name" required maxlength="80" />
+        </label>
+        <div class="dialog-actions">
+          <button type="button" id="favCancel">Cancel</button>
+          <button class="btn" type="submit">Save</button>
+        </div>
+      </form>
+    </dialog>
+    <nav class="pathbar" id="pathbar" aria-label="Path"></nav>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
